@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { prisma } from "../..";
+import { prisma } from "../../..";
 
 // export const addUser = async () => {
 // 	const user = await prisma.user.create({
@@ -10,9 +10,25 @@ import { prisma } from "../..";
 
 export const users = async (req: Request, res: Response) => {
   try {
-    const users = await prisma.user.findMany();
-    res.json(users);
+    const user = await prisma.user.findMany();
+    res.json(user);
   } catch (e) {
-    console.error(e, "aldaa");
+    console.error(e, "error here --->");
+  }
+};
+
+export const addUser = async (req: Request, res: Response) => {
+  const { email, password, username } = req.body;
+  try {
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        password,
+        username,
+      },
+    });
+    res.json({ message: "successfully added", id: newUser.id });
+  } catch (e) {
+    console.error(e, "error to add new user ====>");
   }
 };

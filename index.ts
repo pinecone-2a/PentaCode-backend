@@ -1,13 +1,16 @@
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import express from "express";
+import cors from "cors";
+import { userRouter } from "./router/userRouter";
+const port = 5000;
 
-const addUser = async () => {
-	const user = await prisma.user.create({
-		data: {
-			email: "amgaa0329@gmail.com",
-			name: "Amgalanbaatar",
-		},
-	});
-	console.log(user);
-};
-addUser();
+export const prisma = new PrismaClient();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.use("/user", userRouter);
+app.listen(port, () => {
+	console.log(`http://localhost:${port}`);
+});

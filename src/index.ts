@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
-import { userRouter } from "./src/router/userRouter";
+import { userRouter } from "./router/userRouter";
 
 dotenv.config();
 const port = 5000;

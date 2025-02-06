@@ -13,9 +13,55 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  usename String
+  id String @id @default(nanoid())
+  email String @unique @db.VarChar(255)
+  password String 
+  username String @unique @db.VarChar(255)
+  bankCard BankCard?
+  profile Profile?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  receivedDonation Donation[] @relation("recipient")
+  sentDonation Donation[] @relation("donor")
+}
 
+model Donation {
+  id                      String   @id @default(nanoid())
+  amount                  Float
+  specialMessage          String
+  socialURLOrBuyMeACoffee String
+  donorId                 String   @unique
+  recipientId             String   @unique
+  donor                   User    @relation("donor", fields: [donorId], references: [id])
+  recipient               User    @relation("recipient", fields: [recipientId], references: [id])
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+
+model Profile {
+  id String @id @default(nanoid())
+  name String
+  about String
+  avatarImage String
+  socialMediaURL String
+  successMessage String @default("")
+  backgroundImage String @default("")
+  user User @relation(fields: [userId] , references: [id])
+  userId String @unique 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+
+}
+model BankCard {
+  id String @id @default(nanoid())
+  cardNumber String @db.VarChar(20)
+  country String 
+  firstName String
+  lastName String
+  expiryDate DateTime
+  cvc String @db.VarChar(3)
+  userId String @unique
+  user User @relation(fields: [userId] , references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }

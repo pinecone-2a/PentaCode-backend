@@ -12,7 +12,7 @@ export const prisma = new PrismaClient();
 app.use(cors());
 app.use(express.json());
 
-app.use("/user", userRouter);
+app.use("/auth", userRouter);
 app.listen(port, () => {
   console.log(`successfully started on http://localhost:${port}`);
 });

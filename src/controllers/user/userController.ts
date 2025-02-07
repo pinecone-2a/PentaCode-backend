@@ -1,12 +1,8 @@
 import { Request, Response } from "express";
-import { prisma } from "../../..";
+import bcrypt from "bcrypt";
+import { PrismaClient } from "@prisma/client";
 
-// export const addUser = async () => {
-// 	const user = await prisma.user.create({
-// 		data: { email: "tsoomoo@gmail.com", username: "tsoomoo" },
-// 	});
-// 	console.log(user);
-// };
+const prisma = new PrismaClient();
 
 export const users = async (req: Request, res: Response) => {
   try {
@@ -20,14 +16,18 @@ export const users = async (req: Request, res: Response) => {
 export const addUser = async (req: Request, res: Response) => {
   const { email, password, username } = req.body;
   try {
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        password,
-        username,
-      },
-    });
-    res.json({ message: "successfully added", id: newUser.id });
+    if (password) {
+      const rounds = 10;
+      const encryptedPass = bcrypt.hashSync(password, rounds);
+      const newUser = await prisma.user.create({
+        data: {
+          email,
+          password: encryptedPass,
+          username,
+        },
+      });
+      res.json({ message: "successfully added", id: newUser.id });
+    }
   } catch (e) {
     console.error(e, "error to add new user ====>");
   }

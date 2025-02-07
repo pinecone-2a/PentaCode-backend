@@ -50,9 +50,18 @@ export const createProfile = async (req: Request, res: Response) => {
         socialMediaURL,
       },
     });
-    res.json({ message: "Successfully add new profile" });
+    res.json({ message: "Successfully add new profile", newProfile });
   } catch (e) {
-    console.error(e, "Check your info");
+    console.error(e, "Check your hosoo");
+  }
+};
+
+export const profiles = async (req: Request, res: Response) => {
+  try {
+    const profiles = await prisma.profile.findMany();
+    res.json(profiles);
+  } catch (e) {
+    console.error(e, "error here --->");
   }
 };
 

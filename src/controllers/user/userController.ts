@@ -9,26 +9,26 @@ import { prisma } from "../../..";
 // };
 
 export const users = async (req: Request, res: Response) => {
-  try {
-    const user = await prisma.user.findMany();
-    res.json(user);
-  } catch (e) {
-    console.error(e, "error here --->");
-  }
+	try {
+		const user = await prisma.user.findMany();
+		res.json(user);
+	} catch (e) {
+		console.error(e, "error here --->");
+	}
 };
 
 export const addUser = async (req: Request, res: Response) => {
-  const { email, password, username } = req.body;
-  try {
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        password,
-        username,
-      },
-    });
-    res.json({ message: "successfully added", id: newUser.id });
-  } catch (e) {
-    console.error(e, "error to add new user ====>");
-  }
+	const { email, password, username } = req.body;
+	try {
+		const newUser = await prisma.user.create({
+			data: {
+				email,
+				password,
+				username,
+			},
+		});
+		res.json({ message: "successfully added", id: newUser.id });
+	} catch (e) {
+		console.error(e, "error to add new user ====>");
+	}
 };

@@ -4,16 +4,15 @@ import {
   currentUser,
   editProfile,
   getExplore,
-  profiles,
   viewProfile,
 } from "../controllers/profile/profileController";
 
 export const profileRouter = Router();
 
-profileRouter.get("/profile/view/:username", viewProfile);
-profileRouter.get("/profile/current-user", currentUser);
-profileRouter.get("/profile/explore", getExplore);
+profileRouter.get("/view/:username", viewProfile);
+profileRouter.get("/current-user", currentUser);
+profileRouter.get("/explore", getExplore);
 profileRouter.post("/:userId", createProfile);
-profileRouter.put("/profile/:profileId", editProfile);
+profileRouter.put("/:profileId", editProfile);
 
-profileRouter.get("/profile", profiles);
+

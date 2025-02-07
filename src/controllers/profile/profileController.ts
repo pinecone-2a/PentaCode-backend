@@ -17,20 +17,16 @@ export const currentUser = async (req: Request, res: Response) => {
 };
 
 export const getExplore = async (req: Request, res: Response) => {
-  let filter = {};
-  const searchQuery = req.query.search;
-
-  if (searchQuery) {
-    filter = {
+  try {  
+  const searchQuery = req.query.search === "string" ? req.query.search : undefined;
+  const  filter = searchQuery ? {
       where: {
         name: {
           startsWith: searchQuery,
-        },
-      },
-    };
-  }
-  try {
-    const explore = await prisma.profile.findMany(filter);
+        }
+      }
+    } :  {};
+    const explore = await prisma.profile.findMany();
     res.json(explore);
   } catch (e) {
     console.error(e, " We have not profile");
@@ -56,17 +52,8 @@ export const createProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const profiles = async (req: Request, res: Response) => {
-  try {
-    const profiles = await prisma.profile.findMany();
-    res.json(profiles);
-  } catch (e) {
-    console.error(e, "error here --->");
-  }
-};
-
 export const editProfile = async (req: Request, res: Response) => {
-  const id = req.params.profileId;
+  const id = req.params.userId;
   try {
     const { name, about, avatarImage, socialMediaURL } = req.body;
     const edit = await prisma.profile.update({

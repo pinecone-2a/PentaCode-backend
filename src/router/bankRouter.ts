@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { addBankCard, getBankCard } from "../controllers/bank/bankController";
 
-export const userRouter = Router();
+export const bankRouter = Router();
 
-userRouter.get("/bankcard/:userId", getBankCard);
-userRouter.post("/bankcard/:userId", addBankCard);
+bankRouter.get("/:userId", getBankCard);
+bankRouter.post("/:userId", addBankCard);

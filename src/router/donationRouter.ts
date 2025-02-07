@@ -1,8 +1,14 @@
 import { Router } from "express";
+import {
+  createDonation,
+  receivedDonation,
+  Donation,
+  totalEarningsDonations,
+} from "../controllers/donation/donationController";
 
 export const donationRouter = Router();
 
-donationRouter.post("/create-donation");
-donationRouter.get("/recieved/:userId");
-donationRouter.get("/total-earnings/:userId");
-donationRouter.get("/search-donations/:userId");
+donationRouter.post("/", createDonation);
+donationRouter.get("/received/:userId", receivedDonation);
+donationRouter.get("/total-earnings/:userId", totalEarningsDonations);
+donationRouter.get("/donation/:userId", Donation);

@@ -75,9 +75,6 @@ export const totalEarningsDonations = async (req: Request, res: Response) => {
         },
         OR: [
           {
-            donorId: userId, // Donations where the user is the donor
-          },
-          {
             recipientId: userId, // Donations where the user is the recipient
           },
         ],

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 
@@ -10,6 +10,44 @@ export const users = async (req: Request, res: Response) => {
     res.json(user);
   } catch (e) {
     console.error(e, "error here --->");
+  }
+};
+
+export const checkUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const username = req.body.username;
+  try {
+    const userList = await prisma.user.findUnique({ where: { username } });
+    if (userList) {
+      res.json({ message: "Username has already taken" });
+    } else {
+      res.json({ message: "Username is available" });
+      next();
+    }
+  } catch (e) {
+    console.error(e, "error catching usernames --->");
+  }
+};
+
+export const checkEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const email = req.body.email;
+  try {
+    const emailList = await prisma.user.findUnique({ where: { email } });
+    if (emailList) {
+      res.json({ message: "Email has already taken" });
+    } else {
+      res.json({ message: "Email is available" });
+      next();
+    }
+  } catch (e) {
+    console.error(e, "error catching email --->");
   }
 };
 

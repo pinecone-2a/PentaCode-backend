@@ -1,13 +1,13 @@
 import { Router } from "express";
 import {
   addUser,
-  checkEmail,
   checkUser,
   users,
+  verifyUser,
 } from "../controllers/user/userController";
 
 export const userRouter = Router();
 
 userRouter.get("/", users);
-userRouter.post("/signup", checkUser, addUser);
-userRouter.post("/login", checkEmail, addUser);
+userRouter.post("/sign-up", checkUser);
+userRouter.post("/sign-in", verifyUser);

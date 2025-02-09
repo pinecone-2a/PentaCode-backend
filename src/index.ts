@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
-import { userRouter } from "./src/router/userRouter";
+import { userRouter } from "./router/userRouter";
+import { donationRouter } from "./router/donationRouter";
 
 dotenv.config();
 const port = 5000;
@@ -13,6 +14,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/auth", userRouter);
+app.use("/donation", donationRouter);
+
 app.listen(port, () => {
   console.log(`successfully started on http://localhost:${port}`);
 });

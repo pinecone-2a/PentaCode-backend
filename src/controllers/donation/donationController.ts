@@ -89,7 +89,7 @@ export const totalEarningsDonations = async (req: Request, res: Response) => {
     // Respond with the total earnings and donations data
     res.json({ message: "total", donations, totalEarnings });
   } catch (error) {
-    // If there's an error, send it as a response
+    // If there's an error, send it as a response.
     res.send(error);
   }
 };

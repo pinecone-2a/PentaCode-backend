@@ -66,7 +66,6 @@ export const totalEarningsDonations = async (req: Request, res: Response) => {
   before90Days.setDate(today.getDate() - 90);
 
   try {
-    // Get donations in the last 90 days
     const last90DaysDonations = await prisma.donation.findMany({
       where: {
         recipientId: userId,

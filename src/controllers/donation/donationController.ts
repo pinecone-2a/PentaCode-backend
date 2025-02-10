@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { prisma } from "../../..";
+import { prisma } from "../..";
 
 export const Donation = async (req: Request, res: Response) => {
 	const userId = req.params.userId;
@@ -59,44 +59,44 @@ export const totalEarningsDonations = async (req: Request, res: Response) => {
 	const userId = req.params.userId;
 	const today = new Date();
 
-  const before30Days = new Date();
-  before30Days.setDate(today.getDate() - 30);
+	const before30Days = new Date();
+	before30Days.setDate(today.getDate() - 30);
 
-  const before90Days = new Date();
-  before90Days.setDate(today.getDate() - 90);
+	const before90Days = new Date();
+	before90Days.setDate(today.getDate() - 90);
 
-  try {
-    const last90DaysDonations = await prisma.donation.findMany({
-      where: {
-        recipientId: userId,
-        createdAt: {
-          gte: before90Days,
-        },
-      },
-    });
+	try {
+		const last90DaysDonations = await prisma.donation.findMany({
+			where: {
+				recipientId: userId,
+				createdAt: {
+					gte: before90Days,
+				},
+			},
+		});
 
-    const last30DaysDonations = last90DaysDonations.filter(
-      (donation) => donation.createdAt >= before30Days
-    );
-    const totalEarnings30Days = last30DaysDonations.reduce(
-      (acc, donation) => acc + donation.amount,
-      0
-    );
+		const last30DaysDonations = last90DaysDonations.filter(
+			(donation) => donation.createdAt >= before30Days
+		);
+		const totalEarnings30Days = last30DaysDonations.reduce(
+			(acc, donation) => acc + donation.amount,
+			0
+		);
 
-    const totalEarnings90Days = last90DaysDonations.reduce(
-      (acc, donation) => acc + donation.amount,
-      0
-    );
+		const totalEarnings90Days = last90DaysDonations.reduce(
+			(acc, donation) => acc + donation.amount,
+			0
+		);
 
-    res.json({
-      message: "Total earnings",
-      totalEarnings30Days,
-      totalEarnings90Days,
-      last30DaysDonations,
-      last90DaysDonations,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
-  }
+		res.json({
+			message: "Total earnings",
+			totalEarnings30Days,
+			totalEarnings90Days,
+			last30DaysDonations,
+			last90DaysDonations,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Something went wrong" });
+	}
 };

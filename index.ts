@@ -14,7 +14,7 @@ export const prisma = new PrismaClient();
 app.use(cors());
 app.use(express.json());
 
-app.use("/user", userRouter);
+app.use("/auth", userRouter);
 app.use("/bank-card", bankRouter);
 app.use("/donation", donationRouter);
 

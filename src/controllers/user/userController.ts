@@ -54,7 +54,9 @@ export const checkUser = async (req: any, res: any) => {
 				},
 			});
 			console.log("User created:", newUser);
-			return res.status(201).json({ message: "Successfully added", newUser });
+			return res
+				.status(201)
+				.json({ message: "Successfully added", id: newUser.id });
 		}
 	} catch (error) {
 		console.error("Error creating user:", error);
@@ -74,7 +76,7 @@ export const verifyUser = async (req: any, res: any) => {
 		if (!isPasswordCorrect) {
 			return res.status(401).json({ message: "Incorrect password" });
 		}
-		res.json({ message: "Login successful" });
+		res.json({ message: "Login successful", id: user.id });
 	} catch (error) {
 		console.error("Error verifying user:", error);
 		res.status(500).json({ message: "Internal server error" });

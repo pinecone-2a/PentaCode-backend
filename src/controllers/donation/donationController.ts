@@ -36,8 +36,8 @@ export const createDonation = async (req: Request, res: Response) => {
       },
     });
     res.json({ message: "created", data });
-  } catch (error) {
-    res.send(error);
+  } catch (e) {
+    res.send(e);
   }
 };
 
@@ -47,6 +47,7 @@ export const receivedDonation = async (req: Request, res: Response) => {
     const donations = await prisma.donation.findMany({
       where: {
         donorId: userId,
+        recipientId: userId,
       },
     });
     res.json({ message: "received", donations });

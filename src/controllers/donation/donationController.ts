@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { prisma } from "../../..";
+import { prisma } from "../..";
 
 export const Donation = async (req: Request, res: Response) => {
   const userId = req.params.userId;

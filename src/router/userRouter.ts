@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {
-  checkUser,
-  users,
-  verifyUser,
+	checkUser,
+	users,
+	verifyUser,
 } from "../controllers/user/userController";
 
 export const userRouter = Router();

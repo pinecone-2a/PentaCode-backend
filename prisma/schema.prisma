@@ -59,7 +59,7 @@ model BankCard {
   country    String
   firstName  String
   lastName   String
-  expiryDate DateTime
+  expiryDate String
   cvc        String   @db.VarChar(3)
   userId     String   @unique
   user       User     @relation(fields: [userId], references: [id])

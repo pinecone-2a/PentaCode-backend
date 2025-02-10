@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
-import { prisma } from "../../..";
+import { prisma } from "../..";
 
 export const getBankCard = async (req: Request, res: Response) => {
-	try {
-		const bankCard = await prisma.bankCard.findUnique({
-			where: {
-				userId: req.params.userId,
-			},
-		});
-		res.json(bankCard);
-	} catch (e) {
-		console.error(e, "error here --->");
-	}
+  try {
+    const bankCard = await prisma.bankCard.findUnique({
+      where: {
+        userId: req.params.userId,
+      },
+    });
+    res.json(bankCard);
+  } catch (e) {
+    console.error(e, "error here --->");
+  }
 };
 
 export const addBankCard = async (req: Request, res: Response) => {

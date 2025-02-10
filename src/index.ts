@@ -2,9 +2,10 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
-import { userRouter } from "./src/router/userRouter";
-import { bankRouter } from "./src/router/bankRouter";
-import { donationRouter } from "./src/router/donationRouter";
+import { userRouter } from "./router/userRouter";
+import { bankRouter } from "./router/bankRouter";
+import { donationRouter } from "./router/donationRouter";
+
 
 dotenv.config();
 const port = 8000;
@@ -19,5 +20,5 @@ app.use("/bank-card", bankRouter);
 app.use("/donation", donationRouter);
 
 app.listen(port, () => {
-	console.log(`successfully started on http://localhost:${port}`);
+  console.log(`successfully started on http://localhost:${port}`);
 });

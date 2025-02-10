@@ -7,7 +7,7 @@ import { bankRouter } from "./src/router/bankRouter";
 import { donationRouter } from "./src/router/donationRouter";
 
 dotenv.config();
-const port = 8000;
+const port = 5000;
 const app = express();
 export const prisma = new PrismaClient();
 
@@ -19,5 +19,5 @@ app.use("/bank-card", bankRouter);
 app.use("/donation", donationRouter);
 
 app.listen(port, () => {
-	console.log(`successfully started on http://localhost:${port}`);
+  console.log(`successfully started on http://localhost:${port}`);
 });

@@ -1,8 +1,9 @@
 import { Router } from "express";
 import {
-	checkUser,
-	users,
-	verifyUser,
+  checkUser,
+  forgotPassword,
+  users,
+  verifyUser,
 } from "../controllers/user/userController";
 
 export const userRouter = Router();
@@ -10,3 +11,4 @@ export const userRouter = Router();
 userRouter.get("/", users);
 userRouter.post("/sign-up", checkUser);
 userRouter.post("/sign-in", verifyUser);
+userRouter.patch("/update/:userId", forgotPassword);

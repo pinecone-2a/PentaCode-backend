@@ -32,7 +32,7 @@ export const addBankCard = async (req: Request, res: Response) => {
 		});
 		res.json({ message: "successfully added", id: newBankCard.id });
 	} catch (e) {
-		console.error(e, "error to add new user ====>");
+		console.error(e, "error to add new bank card ====>");
 	}
 };
 

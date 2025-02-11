@@ -15,10 +15,11 @@ export const getBankCard = async (req: Request, res: Response) => {
 };
 
 export const addBankCard = async (req: Request, res: Response) => {
-	const { cardNumber, country, firstName, lastName, expiryDate, cvc, userId } =
+	const { cardNumber, country, firstName, lastName, expiryDate, cvc } =
 		req.body;
+	const { userId } = req.params;
 	try {
-		const newUser = await prisma.bankCard.create({
+		const newBankCard = await prisma.bankCard.create({
 			data: {
 				cardNumber,
 				country,
@@ -29,8 +30,32 @@ export const addBankCard = async (req: Request, res: Response) => {
 				userId,
 			},
 		});
-		res.json({ message: "successfully added", id: newUser.id });
+		res.json({ message: "successfully added", id: newBankCard.id });
 	} catch (e) {
 		console.error(e, "error to add new user ====>");
+	}
+};
+
+export const editBankCard = async (req: Request, res: Response) => {
+	const id = req.params.bankCardId;
+	const { cardNumber, country, firstName, lastName, expiryDate, cvc } =
+		req.body;
+	try {
+		const newBankCard = await prisma.bankCard.update({
+			where: {
+				id,
+			},
+			data: {
+				cardNumber,
+				country,
+				firstName,
+				lastName,
+				expiryDate,
+				cvc,
+			},
+		});
+		res.json({ message: "successfully edited", id: newBankCard.id });
+	} catch (e) {
+		console.error(e, "error to eidt bank card ====>");
 	}
 };

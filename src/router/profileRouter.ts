@@ -9,7 +9,7 @@ import {
 
 export const profileRouter = Router();
 
-profileRouter.get("/view/:profileId", viewProfile);
+profileRouter.get("/view/:userId", viewProfile);
 profileRouter.get("/currentuser/:userId", currentUser);
 profileRouter.get("/explore", getExplore);
 profileRouter.post("/:userId", createProfile);

@@ -11,4 +11,4 @@ export const userRouter = Router();
 userRouter.get("/", users);
 userRouter.post("/sign-up", checkUser);
 userRouter.post("/sign-in", verifyUser);
-userRouter.patch("/update/:userId", forgotPassword);
+userRouter.post("/forgot-password", forgotPassword);

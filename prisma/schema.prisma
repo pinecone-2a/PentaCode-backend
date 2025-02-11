@@ -71,4 +71,5 @@ model Otp {
   id         String   @id @default(nanoid())
   email      String
   otp        String
+  otpExpires DateTime
 }

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
+import nodemailer from "nodemailer";
 
 const prisma = new PrismaClient();
 
@@ -82,14 +83,47 @@ export const verifyUser = async (req: any, res: any) => {
   }
 };
 
-export const forgotPassword = async (req: Request, res: Response) => {
+export const forgotPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { email } = req.body;
+
   try {
     const user = await prisma.user.findUnique({ where: { email } });
-    if (user) {
-      const otp = Math.floor(Math.random() * 899999 + 100000);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
     }
+
+    const otp = Math.floor(100000 + Math.random() * 899999 + 100000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    await prisma.otp.create({
+      data: { email, otp, otpExpires },
+    });
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER || "",
+        pass: process.env.EMAIL_PASS || "",
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset OTP",
+      text: `Your OTP for password reset is: ${otp}. It expires in 10 minutes.`,
+    });
+
+    res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
-    res.status(401).json({ message: "Error to catch email" });
+    console.error("Error in forgotPassword:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };

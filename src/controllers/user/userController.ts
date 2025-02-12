@@ -88,6 +88,9 @@ export const forgotPassword = async (
   res: Response
 ): Promise<void> => {
   const { email } = req.body;
+  if (!email) {
+    res.status(400).json({ error: "Email is required" });
+  }
 
   try {
     const user = await prisma.user.findUnique({ where: { email } });
@@ -97,7 +100,7 @@ export const forgotPassword = async (
       return;
     }
 
-    const otp = Math.floor(100000 + Math.random() * 899999 + 100000).toString();
+    const otp = Math.floor(Math.random() * 899999 + 100000).toString();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
     await prisma.otp.create({
@@ -120,10 +123,22 @@ export const forgotPassword = async (
       subject: "Password Reset OTP",
       text: `Your OTP for password reset is: ${otp}. It expires in 10 minutes.`,
     });
-
     res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
     console.error("Error in forgotPassword:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const verifyOtp = async (req: Request, res: Response) => {
+  const { otp } = req.body;
+  try {
+    if (!otp) {
+      res.status(400).json({ error: "OTP not found" });
+      return;
+    }
+    await prisma.otp.findFirst({ where: { otp } });
+  } catch (error) {
+    error;
   }
 };

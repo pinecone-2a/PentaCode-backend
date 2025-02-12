@@ -205,16 +205,21 @@ export const resetPassword = async (
 
 export const updatePassword = async (req: Request, res: Response) => {
 	const { userId } = req.params;
-	const { newPassword } = req.body;
-	const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+	const { password } = req.body;
+  const salt = await bcrypt.genSalt(10);
+	const hashedNewPassword = await bcrypt.hash(password, salt);
+  console.log("updating")
 	try {
+    console.log(hashedNewPassword)
+    console.log(userId)
 		const updatePassword = await prisma.user.update({
 			where: { id: userId },
 			data: {
 				password: hashedNewPassword,
 			},
 		});
-		res.json({ message: "Successfull updated password ", updatePassword });
+    console.log(updatePassword)
+		res.json({ message: "Successfully updated the password ", updatePassword });
 	} catch (error) {
 		res.status(401).json({ message: "Error to update password" });
 	}

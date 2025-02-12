@@ -3,6 +3,7 @@ import {
   checkUser,
   forgotPassword,
   resetPassword,
+  updatePassword,
   users,
   verifyOtp,
   verifyUser,
@@ -16,3 +17,5 @@ userRouter.post("/sign-in", verifyUser);
 userRouter.post("/forgot-password", forgotPassword);
 userRouter.post("/verify-otp", verifyOtp);
 userRouter.post("/reset-password", resetPassword);
+userRouter.put("/update-password/:userId", updatePassword);
+

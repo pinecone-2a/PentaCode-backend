@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../..";
 
 export const Donation = async (req: Request, res: Response) => {
-  const userId = req.params.userId;
+  const { userId } = req.params;
   try {
     const allDonations = await prisma.donation.findMany({
       where: {
@@ -42,20 +42,21 @@ export const createDonation = async (req: Request, res: Response) => {
 };
 
 export const receivedDonation = async (req: Request, res: Response) => {
-  const userId = req.params.userId;
+  const { userId } = req.params;
+
   try {
     const donations = await prisma.donation.findMany({
       where: {
-        donorId: userId,
-        recipientId: userId,
+        OR: [{ donorId: userId }, { recipientId: userId }],
       },
     });
-    res.json({ message: "received", donations });
+
+    res.json({ message: "Success", donations });
   } catch (error) {
-    res.status(500).json({ error: "Error" });
+    console.error("Error fetching donations:", error);
+    res.status(500).json({ error: "error" });
   }
 };
-
 export const totalEarningsDonations = async (req: Request, res: Response) => {
   const userId = req.params.userId;
   const today = new Date();

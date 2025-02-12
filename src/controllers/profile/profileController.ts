@@ -27,7 +27,7 @@ export const currentUser = async (req: Request, res: Response) => {
 			},
 		});
 		console.log(currentProfile);
-		res.json({ currentProfile });
+		res.json( currentProfile );
 	} catch (e) {
 		console.error(e, "Have not profile ");
 	}

@@ -3,11 +3,11 @@ import { prisma } from "../..";
 import { Prisma } from "@prisma/client";
 
 export const viewProfile = async (req: Request, res: Response) => {
-  const { userId } = req.params;
+  const { profileId } = req.params;
   try {
     const view = await prisma.profile.findUnique({
       where: {
-        userId,
+        id: profileId,
       },
     });
     console.log(view);

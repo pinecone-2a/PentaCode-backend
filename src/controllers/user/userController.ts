@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
+import nodemailer from "nodemailer";
+import { generateAccessToken } from "./userJWT";
 
 const prisma = new PrismaClient();
 
@@ -71,7 +73,21 @@ export const verifyUser = async (req: any, res: any) => {
 			return res.status(404).json({ message: "Email not found" });
 		}
 		const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
+    if (isPasswordCorrect) {
+      const accessToken = generateAccessToken(user.id);
+      res
+        .cookie("access_token", accessToken, {
+          httpOnly: true,
+          sameSite: "strict",
+        })
+        .json({
+          success: true,
+          message: "Login successful",
+          code: "SIGNED_IN",
+          data: { accessToken },
+        });
+      return;
+    }
 		if (!isPasswordCorrect) {
 			return res.status(401).json({ message: "Incorrect password" });
 		}
@@ -82,16 +98,109 @@ export const verifyUser = async (req: any, res: any) => {
 	}
 };
 
-export const forgotPassword = async (req: Request, res: Response) => {
-	const { email } = req.body;
-	try {
-		const user = await prisma.user.findUnique({ where: { email } });
-		if (user) {
-			const otp = Math.floor(Math.random() * 899999 + 100000);
-		}
-	} catch (error) {
-		res.status(401).json({ message: "Error to catch email" });
-	}
+export const forgotPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { email } = req.body;
+  if (!email) {
+    res.status(400).json({ error: "Email is required" });
+  }
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    const otp = Math.floor(Math.random() * 899999 + 100000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    await prisma.otp.create({
+      data: { email, otp, otpExpires },
+    });
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER || "",
+        pass: process.env.EMAIL_PASS || "",
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset OTP",
+      text: `Your OTP for password reset is: ${otp}. It expires in 10 minutes.`,
+    });
+    res.status(200).json({ message: "OTP sent successfully" });
+  } catch (error) {
+    console.error("Error in forgotPassword:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const verifyOtp = async (req: Request, res: Response) => {
+  const { email, otp } = req.body;
+  if (!otp || !email) {
+    res.status(400).json({ error: "Email and OTP are required" });
+    return;
+  }
+
+  try {
+    const otpRecord = await prisma.otp.findFirst({
+      where: { email, otp },
+    });
+
+    if (!otpRecord) {
+      res.status(400).json({ error: "Invalid or expired OTP" });
+      return;
+    }
+
+    res.status(200).json({ message: "OTP verified successfully" });
+  } catch (error) {
+    console.error("Error in verifyOtp:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const resetPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).json({ error: "Email and new password are required" });
+    return;
+  }
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    await prisma.user.update({
+      where: { email },
+      data: { password: hashedPassword },
+    });
+
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).json({ error: "Server error" });
+  }
 };
 
 export const updatePassword = async (req: Request, res: Response) => {

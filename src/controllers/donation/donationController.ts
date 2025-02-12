@@ -25,7 +25,7 @@ export const createDonation = async (req: Request, res: Response) => {
     recipientId,
   } = req.body;
   try {
-    console.log("checking");
+    console.log("calling");
     const data = await prisma.donation.create({
       data: {
         donorId,
@@ -37,7 +37,7 @@ export const createDonation = async (req: Request, res: Response) => {
     });
     res.json({ message: "created", data });
   } catch (error) {
-    res.status(500).json({ error: "Error" });
+    res.status(500).json({ error });
   }
 };
 

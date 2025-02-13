@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 import nodemailer from "nodemailer";
 import { generateAccessToken } from "./userJWT";
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
@@ -74,9 +75,18 @@ export const verifyUser = async (req: any, res: any) => {
     }
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (isPasswordCorrect) {
+      const refreshToken = jwt.sign(
+        { userId: user.id },
+        process.env.REFRESH_TOKEN_SECRET!,
+        { expiresIn: "24h" }
+      );
       const accessToken = generateAccessToken(user.id);
       res
-        .cookie("access_token", accessToken, {
+        .cookie("accessToken", accessToken, {
+          httpOnly: true,
+          sameSite: "strict",
+        })
+        .cookie("refreshToken", refreshToken, {
           httpOnly: true,
           sameSite: "strict",
         })
@@ -84,7 +94,7 @@ export const verifyUser = async (req: any, res: any) => {
           success: true,
           message: "Login successful",
           code: "SIGNED_IN",
-          data: { accessToken },
+          data: { accessToken, refreshToken },
         });
       return;
     }

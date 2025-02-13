@@ -52,9 +52,9 @@ export const receivedDonation = async (req: Request, res: Response) => {
     });
 
     res.json({ message: "Success", donations });
-  } catch (error) {
-    console.error("Error fetching donations:", error);
-    res.status(500).json({ error: "error" });
+  } catch (e) {
+    console.error("Error fetching donations:", e);
+    res.status(500).json({ e: "error" });
   }
 };
 

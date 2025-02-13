@@ -40,6 +40,7 @@ export const addUser = async (req: Request, res: Response) => {
 
 export const checkUser = async (req: any, res: any) => {
   const { username, email, password } = req.body;
+  const { userId } = req;
 
   try {
     const existingUser = await prisma.user.findUnique({ where: { username } });
@@ -56,9 +57,7 @@ export const checkUser = async (req: any, res: any) => {
         },
       });
       console.log("User created:", newUser);
-      return res
-        .status(201)
-        .json({ message: "Successfully added", id: newUser.id });
+      return res.status(201).json({ message: "Successfully added" });
     }
   } catch (error) {
     console.error("Error creating user:", error);
@@ -81,20 +80,24 @@ export const verifyUser = async (req: any, res: any) => {
         { expiresIn: "24h" }
       );
       const accessToken = generateAccessToken(user.id);
+      console.log("access token", accessToken);
+      console.log("refresh token", refreshToken);
       res
         .cookie("accessToken", accessToken, {
           httpOnly: true,
           sameSite: "strict",
+          secure: true,
         })
         .cookie("refreshToken", refreshToken, {
           httpOnly: true,
           sameSite: "strict",
+          secure: true,
         })
         .json({
           success: true,
           message: "Login successful",
           code: "SIGNED_IN",
-          data: { accessToken, refreshToken },
+          data: { accessToken },
         });
       return;
     }
@@ -210,5 +213,32 @@ export const resetPassword = async (
   } catch (error) {
     console.error("Error resetting password:", error);
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+export type CustomRequest = Request & {
+  userId?: string;
+};
+export const verifyCookie = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { accessToken } = req.cookies;
+  if (!accessToken) {
+    res.status(404).json({ error: "Token not found" });
+    return;
+  }
+  try {
+    const user = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as {
+      id: string;
+    };
+    if (user) {
+      req.userId = user.id;
+      next();
+      return;
+    }
+  } catch (e) {
+    console.error(e, "aldaa garsandaa");
   }
 };

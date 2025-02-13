@@ -40,7 +40,6 @@ export const addUser = async (req: Request, res: Response) => {
 
 export const checkUser = async (req: any, res: any) => {
   const { username, email, password } = req.body;
-  const { userId } = req;
 
   try {
     const existingUser = await prisma.user.findUnique({ where: { username } });
@@ -84,12 +83,10 @@ export const verifyUser = async (req: any, res: any) => {
       console.log("refresh token", refreshToken);
       res
         .cookie("accessToken", accessToken, {
-          httpOnly: true,
           sameSite: "strict",
           secure: true,
         })
         .cookie("refreshToken", refreshToken, {
-          httpOnly: true,
           sameSite: "strict",
           secure: true,
         })
@@ -233,6 +230,7 @@ export const verifyCookie = async (
     const user = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as {
       id: string;
     };
+    console.log(user);
     if (user) {
       req.userId = user.id;
       next();

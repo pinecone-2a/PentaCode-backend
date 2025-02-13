@@ -47,7 +47,7 @@ export const receivedDonation = async (req: Request, res: Response) => {
   try {
     const donations = await prisma.donation.findMany({
       where: {
-        OR: [{ donorId: userId }, { recipientId: userId }],
+        AND: [{ donorId: userId }, { recipientId: userId }],
       },
     });
 

@@ -37,13 +37,15 @@ export const addBankCard = async (req: Request, res: Response) => {
 };
 
 export const editBankCard = async (req: Request, res: Response) => {
-	const id = req.params.bankCardId;
+	const userId = req.params.userId;
+	console.log(userId);
+	console.log("editting");
 	const { cardNumber, country, firstName, lastName, expiryDate, cvc } =
 		req.body;
 	try {
 		const newBankCard = await prisma.bankCard.update({
 			where: {
-				id,
+				userId,
 			},
 			data: {
 				cardNumber,

@@ -36,8 +36,8 @@ export const createDonation = async (req: Request, res: Response) => {
       },
     });
     res.json({ message: "created", data });
-  } catch (error) {
-    res.status(500).json({ error });
+  } catch (e) {
+    res.status(500).json({ e });
   }
 };
 

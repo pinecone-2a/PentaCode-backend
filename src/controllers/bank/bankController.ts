@@ -18,6 +18,7 @@ export const addBankCard = async (req: Request, res: Response) => {
 	const { cardNumber, country, firstName, lastName, expiryDate, cvc } =
 		req.body;
 	const { userId } = req.params;
+	console.log("adding");
 	try {
 		const newBankCard = await prisma.bankCard.create({
 			data: {

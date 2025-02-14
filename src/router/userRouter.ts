@@ -18,4 +18,3 @@ userRouter.post("/forgot-password", forgotPassword);
 userRouter.post("/verify-otp", verifyOtp);
 userRouter.post("/reset-password", resetPassword);
 userRouter.put("/update-password/:userId", updatePassword);
-

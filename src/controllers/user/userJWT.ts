@@ -4,8 +4,8 @@ import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 
 export const generateAccessToken = (userId: string) => {
-	const token = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET!, {
-		expiresIn: "1m",
-	});
-	return token;
+  const token = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET!, {
+    expiresIn: "10m",
+  });
+  return token;
 };

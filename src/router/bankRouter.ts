@@ -1,12 +1,13 @@
 import { Router } from "express";
 import {
-	addBankCard,
-	editBankCard,
-	getBankCard,
+  addBankCard,
+  editBankCard,
+  getBankCard,
 } from "../controllers/bank/bankController";
+import { verifyCookie } from "../controllers/user/userController";
 
 export const bankRouter = Router();
 
-bankRouter.get("/:userId", getBankCard);
-bankRouter.post("/:userId", addBankCard);
-bankRouter.put("/:userId", editBankCard);
+bankRouter.get("/:userId", verifyCookie, getBankCard);
+bankRouter.post("/:userId", verifyCookie, addBankCard);
+bankRouter.put("/:userId", verifyCookie, editBankCard);

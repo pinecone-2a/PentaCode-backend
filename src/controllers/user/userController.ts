@@ -14,6 +14,12 @@ export const users = async (req: Request, res: Response) => {
 	} catch (e) {
 		console.error(e, "error here --->");
 	}
+	try {
+		const user = await prisma.user.findMany();
+		res.json(user);
+	} catch (e) {
+		console.error(e, "error here --->");
+	}
 };
 
 export const addUser = async (req: Request, res: Response) => {
@@ -211,6 +217,28 @@ export const resetPassword = async (
 	} catch (error) {
 		console.error("Error resetting password:", error);
 		res.status(500).json({ error: "Server error" });
+	}
+};
+
+export const updatePassword = async (req: Request, res: Response) => {
+	const { userId } = req.params;
+	const { password } = req.body;
+	const salt = await bcrypt.genSalt(10);
+	const hashedNewPassword = await bcrypt.hash(password, salt);
+	console.log("updating");
+	try {
+		console.log(hashedNewPassword);
+		console.log(userId);
+		const updatePassword = await prisma.user.update({
+			where: { id: userId },
+			data: {
+				password: hashedNewPassword,
+			},
+		});
+		console.log(updatePassword);
+		res.json({ message: "Successfully updated the password ", updatePassword });
+	} catch (error) {
+		res.status(401).json({ message: "Error to update password" });
 	}
 };
 

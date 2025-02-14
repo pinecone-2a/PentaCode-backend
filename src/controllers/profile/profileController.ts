@@ -3,13 +3,14 @@ import { prisma } from "../..";
 import { Prisma } from "@prisma/client";
 
 export const viewProfile = async (req: Request, res: Response) => {
-	const profileId = req.params.profileId;
+	const { profileId } = req.params;
 	try {
 		const view = await prisma.profile.findUnique({
 			where: {
 				id: profileId,
 			},
 		});
+		console.log(view);
 		res.json(view);
 	} catch (e) {
 		console.error(e, " Hereglegch baisangue");
@@ -19,12 +20,14 @@ export const viewProfile = async (req: Request, res: Response) => {
 export const currentUser = async (req: Request, res: Response) => {
 	const id = req.params.userId;
 	try {
+		console.log("calling");
 		const currentProfile = await prisma.profile.findUnique({
 			where: {
 				userId: id,
 			},
 		});
-		res.json(currentProfile);
+		console.log(currentProfile);
+		res.json( currentProfile );
 	} catch (e) {
 		console.error(e, "Have not profile ");
 	}
@@ -78,12 +81,12 @@ export const createProfile = async (req: Request, res: Response) => {
 
 export const editProfile = async (req: Request, res: Response) => {
 	const id = req.params.profileId;
-
+	const { name, about, avatarImage, socialMediaURL } = req.body;
 	try {
-		const { name, about, avatarImage, socialMediaURL } = req.body;
+		console.log(id);
 		const edit = await prisma.profile.update({
 			where: {
-				id,
+				userId: id,
 			},
 			data: {
 				name: name,

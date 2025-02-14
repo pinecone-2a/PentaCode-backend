@@ -9,4 +9,4 @@ export const bankRouter = Router();
 
 bankRouter.get("/:userId", getBankCard);
 bankRouter.post("/:userId", addBankCard);
-bankRouter.put("/:bankCardId", editBankCard);
+bankRouter.put("/:userId", editBankCard);

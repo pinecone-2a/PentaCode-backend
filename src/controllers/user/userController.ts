@@ -51,19 +51,43 @@ export const checkUser = async (req: any, res: any) => {
     const existingUser = await prisma.user.findUnique({ where: { username } });
     if (existingUser) {
       return res.status(409).json({ message: "Username has already taken" });
-    } else {
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const newUser = await prisma.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-          username,
-        },
-      });
-      console.log("User created:", newUser);
-      return res.status(201).json({ message: "Successfully added" });
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        username,
+      },
+    });
+    console.log("User created:", newUser);
+
+    const refreshToken = jwt.sign(
+      { userId: newUser.id },
+      process.env.REFRESH_TOKEN_SECRET!,
+      { expiresIn: "1h" }
+    );
+    const accessToken = generateAccessToken(newUser.id);
+    console.log("access token", accessToken);
+    console.log("refresh token", refreshToken);
+    res
+      .cookie("accessToken", accessToken, {
+        sameSite: "strict",
+        secure: true,
+      })
+      .cookie("refreshToken", refreshToken, {
+        sameSite: "strict",
+        secure: true,
+      })
+      .status(201)
+      .json({
+        success: true,
+        message: "Successfully added",
+        code: "SIGNED_IN",
+        data: { accessToken, refreshToken },
+      });
   } catch (error) {
     console.error("Error creating user:", error);
     return res.status(500).json({ message: "Internal server error" });

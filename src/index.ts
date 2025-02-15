@@ -6,14 +6,20 @@ import { userRouter } from "./router/userRouter";
 import { bankRouter } from "./router/bankRouter";
 import { donationRouter } from "./router/donationRouter";
 import { profileRouter } from "./router/profileRouter";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const port = process.env.PORT;
 const app = express();
 export const prisma = new PrismaClient();
-
-app.use(cors());
+app.use(
+	cors({
+		origin: process.env.FRONTEND,
+		credentials: true,
+	})
+);
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/auth", userRouter);
 app.use("/bank-card", bankRouter);

@@ -5,10 +5,15 @@ import {
   receivedDonation,
   totalEarningsDonations,
 } from "../controllers/donation/donationController";
+import { verifyCookie } from "../controllers/user/userController";
 
 export const donationRouter = Router();
 
-donationRouter.post("/", createDonation);
-donationRouter.get("/received/:userId", receivedDonation);
-donationRouter.get("/total-earnings/:userId", totalEarningsDonations);
-donationRouter.get("/:userId", Donation);
+donationRouter.post("/", verifyCookie, createDonation);
+donationRouter.get("/received/:userId", verifyCookie, receivedDonation);
+donationRouter.get(
+  "/total-earnings/:userId",
+  verifyCookie,
+  totalEarningsDonations
+);
+donationRouter.get("/:userId", verifyCookie, Donation);

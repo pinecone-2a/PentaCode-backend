@@ -5,6 +5,7 @@ import {
   resetPassword,
   updatePassword,
   users,
+  verifyCookie,
   verifyOtp,
   verifyUser,
 } from "../controllers/user/userController";
@@ -18,4 +19,3 @@ userRouter.post("/forgot-password", forgotPassword);
 userRouter.post("/verify-otp", verifyOtp);
 userRouter.post("/reset-password", resetPassword);
 userRouter.put("/update-password/:userId", updatePassword);
-

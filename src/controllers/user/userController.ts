@@ -36,7 +36,6 @@ export const addUser = async (req: Request, res: Response) => {
           username,
         },
       });
-      console.log("checking");
       res.json({ message: "successfully added", newUser });
     }
   } catch (e) {
@@ -50,7 +49,6 @@ export const checkUser = async (req: any, res: any) => {
   try {
     const existingUser = await prisma.user.findUnique({ where: { username } });
     if (existingUser) {
-      console.log("existing");
       return res.status(409).json({ message: "Username has already taken" });
     }
 

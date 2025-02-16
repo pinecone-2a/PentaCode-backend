@@ -1,13 +1,13 @@
 import { Router } from "express";
 import {
-  checkUser,
-  forgotPassword,
-  resetPassword,
-  updatePassword,
-  users,
-  verifyCookie,
-  verifyOtp,
-  verifyUser,
+	checkUser,
+	forgotPassword,
+	resetPassword,
+	updatePassword,
+	users,
+	verifyCookie,
+	verifyOtp,
+	verifyUser,
 } from "../controllers/user/userController";
 
 export const userRouter = Router();

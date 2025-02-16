@@ -1,10 +1,10 @@
 import { Router } from "express";
 import {
-	createProfile,
-	currentUser,
-	editProfile,
-	getExplore,
-	viewProfile,
+  createProfile,
+  currentUser,
+  editProfile,
+  getExplore,
+  viewProfile,
 } from "../controllers/profile/profileController";
 import { verifyCookie } from "../controllers/user/userController";
 

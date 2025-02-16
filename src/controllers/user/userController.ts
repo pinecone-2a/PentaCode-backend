@@ -275,47 +275,46 @@ export const verifyCookie = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
-) => {
-  const { accessToken } = req.cookies;
-  const { refreshToken } = req.cookies;
-  console.log(req.cookies);
-  console.log(accessToken);
+): Promise<void> => {
+  const { accessToken, refreshToken } = req.cookies;
 
   try {
-    if (
-      jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as {
-        id: string;
-      }
-    ) {
-      const user = jwt.verify(
-        accessToken,
-        process.env.ACCESS_TOKEN_SECRET!
-      ) as {
-        id: string;
-      };
-      if (user) {
-        req.userId = user.id;
-        next();
-        return;
-      }
-    } else if (
-      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as {
-        id: string;
-      }
-    ) {
-      const user = jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET!
-      ) as {
-        id: string;
-      };
-      if (user) {
-        req.userId = user.id;
-        next();
-        return;
+    const user = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as {
+      userId: string;
+    };
+    if (user) {
+      req.userId = user.userId;
+      return next();
+    }
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      console.log("Access token expired, trying refresh token...");
+
+      try {
+        const refreshUser = jwt.verify(
+          refreshToken,
+          process.env.REFRESH_TOKEN_SECRET!
+        ) as { userId: string };
+        console.log("Refresh User:", refreshUser);
+
+        if (refreshUser) {
+          const newAccessToken = generateAccessToken(refreshUser.userId);
+          console.log("New Access Token:", newAccessToken);
+
+          res.cookie("accessToken", newAccessToken, {
+            sameSite: "strict",
+            secure: true,
+          });
+
+          req.userId = refreshUser.userId;
+          return next();
+        }
+      } catch (err) {
+        console.error("Invalid or expired refresh token:", err);
+        res.status(401).json({ error: "Invalid or expired refresh token" });
       }
     }
-  } catch (e) {
+
     res.status(404).json({ error: "Token not found" });
   }
 };

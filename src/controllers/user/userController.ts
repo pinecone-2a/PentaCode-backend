@@ -63,7 +63,6 @@ export const checkUser = async (req: any, res: any) => {
         username,
       },
     });
-    console.log("User created:", newUser);
 
     const refreshToken = jwt.sign(
       { userId: newUser.id },
@@ -71,8 +70,6 @@ export const checkUser = async (req: any, res: any) => {
       { expiresIn: "1h" }
     );
     const accessToken = generateAccessToken(newUser.id);
-    console.log("access token", accessToken);
-    console.log("refresh token", refreshToken);
     res
       .cookie("accessToken", accessToken, {
         sameSite: "strict",
@@ -137,7 +134,7 @@ export const verifyUser = async (req: any, res: any) => {
     res.json({ message: "Login successful", id: user.id });
   } catch (error) {
     console.error("Error verifying user:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(200).json({ message: "User added successfully" });
   }
 };
 

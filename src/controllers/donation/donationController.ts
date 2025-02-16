@@ -6,7 +6,7 @@ export const Donation = async (req: Request, res: Response) => {
   try {
     const allDonations = await prisma.donation.findMany({
       where: {
-        OR: [{ donorId: userId }, { recipientId: userId }],
+        recipientId: userId,
       },
     });
 
@@ -43,9 +43,8 @@ export const createDonation = async (req: Request, res: Response) => {
 
 export const receivedDonation = async (req: Request, res: Response) => {
   const { userId } = req.params;
-   console.log("working")
+  console.log("working");
   try {
- 
     const donations = await prisma.donation.findMany({
       where: {
         OR: [{ donorId: userId }, { recipientId: userId }],
@@ -58,6 +57,7 @@ export const receivedDonation = async (req: Request, res: Response) => {
     res.status(500).json({ error: "error" });
   }
 };
+
 export const totalEarningsDonations = async (req: Request, res: Response) => {
   const userId = req.params.userId;
   const today = new Date();

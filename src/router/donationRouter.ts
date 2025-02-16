@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {
   createDonation,
-  receivedDonation,
   Donation,
+  receivedDonation,
   totalEarningsDonations,
 } from "../controllers/donation/donationController";
 import { verifyCookie } from "../controllers/user/userController";

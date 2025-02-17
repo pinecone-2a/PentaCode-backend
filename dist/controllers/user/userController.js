@@ -119,12 +119,10 @@ const checkUser = (req, res) =>
 			const accessToken = (0, userJWT_1.generateAccessToken)(newUser.id);
 			res
 				.cookie("accessToken", accessToken, {
-					httpOnly: true,
 					sameSite: "strict",
 					secure: true,
 				})
 				.cookie("refreshToken", refreshToken, {
-					httpOnly: true,
 					sameSite: "strict",
 					secure: true,
 				})
@@ -168,12 +166,10 @@ const verifyUser = (req, res) =>
 					.cookie("accessToken", accessToken, {
 						sameSite: "strict",
 						secure: true,
-						httpOnly: true,
 					})
 					.cookie("refreshToken", refreshToken, {
 						sameSite: "strict",
 						secure: true,
-						httpOnly: true,
 					})
 					.json({
 						success: true,
@@ -335,7 +331,6 @@ const verifyCookie = (req, res, next) =>
 						res.cookie("accessToken", newAccessToken, {
 							sameSite: "strict",
 							secure: true,
-							httpOnly: true,
 						});
 						req.userId = refreshUser.userId;
 						return next();

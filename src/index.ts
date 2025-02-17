@@ -14,10 +14,11 @@ const app = express();
 export const prisma = new PrismaClient();
 app.use(
 	cors({
-		origin: process.env.FRONTEND,
+		origin: "*",
 		credentials: true,
 	})
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -27,5 +28,5 @@ app.use("/donation", donationRouter);
 app.use("/profile", profileRouter);
 
 app.listen(port, () => {
-  console.log(`successfully started on http://localhost:${port}`);
+	console.log(`successfully started on http://localhost:${port}`);
 });

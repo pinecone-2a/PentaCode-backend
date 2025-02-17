@@ -76,7 +76,6 @@ export const checkUser = async (req: any, res: any) => {
 				secure: true,
 			})
 			.cookie("refreshToken", refreshToken, {
-				sameSite: "strict",
 				secure: true,
 			})
 			.status(201)
@@ -113,11 +112,9 @@ export const verifyUser = async (req: any, res: any) => {
 			console.log("refresh token", refreshToken);
 			res
 				.cookie("accessToken", accessToken, {
-					sameSite: "strict",
 					secure: true,
 				})
 				.cookie("refreshToken", refreshToken, {
-					sameSite: "strict",
 					secure: true,
 				})
 				.json({
@@ -299,7 +296,6 @@ export const verifyCookie = async (
 					console.log("New Access Token:", newAccessToken);
 
 					res.cookie("accessToken", newAccessToken, {
-						sameSite: "strict",
 						secure: true,
 					});
 

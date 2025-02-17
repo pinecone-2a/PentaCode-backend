@@ -113,9 +113,11 @@ export const verifyUser = async (req: any, res: any) => {
 			res
 				.cookie("accessToken", accessToken, {
 					secure: true,
+					sameSite: "none",
 				})
 				.cookie("refreshToken", refreshToken, {
 					secure: true,
+					sameSite: "none",
 				})
 				.json({
 					success: true,

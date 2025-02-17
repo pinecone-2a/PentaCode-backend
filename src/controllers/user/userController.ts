@@ -299,6 +299,7 @@ export const verifyCookie = async (
 
 					res.cookie("accessToken", newAccessToken, {
 						secure: true,
+						sameSite: "none",
 					});
 
 					req.userId = refreshUser.userId;

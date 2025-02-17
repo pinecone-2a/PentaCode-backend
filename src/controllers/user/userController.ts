@@ -72,7 +72,7 @@ export const checkUser = async (req: any, res: any) => {
 		const accessToken = generateAccessToken(newUser.id);
 		res
 			.cookie("accessToken", accessToken, {
-				sameSite: "strict",
+				sameSite: "none",
 				secure: true,
 			})
 			.cookie("refreshToken", refreshToken, {

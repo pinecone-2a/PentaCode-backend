@@ -77,6 +77,7 @@ export const checkUser = async (req: any, res: any) => {
 			})
 			.cookie("refreshToken", refreshToken, {
 				secure: true,
+				sameSite: "none",
 			})
 			.status(201)
 			.json({

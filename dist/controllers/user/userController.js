@@ -120,9 +120,11 @@ const checkUser = (req, res) =>
 			res
 				.cookie("accessToken", accessToken, {
 					secure: true,
+					sameSite: "none",
 				})
 				.cookie("refreshToken", refreshToken, {
 					secure: true,
+					sameSite: "none",
 				})
 				.status(201)
 				.json({
@@ -163,9 +165,11 @@ const verifyUser = (req, res) =>
 				res
 					.cookie("accessToken", accessToken, {
 						secure: true,
+						sameSite: "none",
 					})
 					.cookie("refreshToken", refreshToken, {
 						secure: true,
+						sameSite: "none",
 					})
 					.json({
 						success: true,
@@ -326,6 +330,7 @@ const verifyCookie = (req, res, next) =>
 						console.log("New Access Token:", newAccessToken);
 						res.cookie("accessToken", newAccessToken, {
 							secure: true,
+							sameSite: "none",
 						});
 						req.userId = refreshUser.userId;
 						return next();

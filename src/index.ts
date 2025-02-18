@@ -14,8 +14,7 @@ const app = express();
 export const prisma = new PrismaClient();
 app.use(
 	cors({
-		origin: "https://penta-code-frontend.vercel.app",
-		credentials: true,
+		origin: "*",
 	})
 );
 

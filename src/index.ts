@@ -13,10 +13,10 @@ const port = process.env.PORT;
 const app = express();
 export const prisma = new PrismaClient();
 app.use(
-	cors({
-		origin: "https://penta-code-frontend.vercel.app/",
-		credentials: true,
-	})
+  cors({
+    origin: "http://localhost:5000",
+    credentials: true,
+  })
 );
 
 app.use(express.json());
@@ -28,5 +28,5 @@ app.use("/donation", donationRouter);
 app.use("/profile", profileRouter);
 
 app.listen(port, () => {
-	console.log(`successfully started on http://localhost:${port}`);
+  console.log(`successfully started on http://localhost:${port}`);
 });

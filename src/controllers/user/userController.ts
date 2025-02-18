@@ -111,21 +111,12 @@ export const verifyUser = async (req: any, res: any) => {
 			const accessToken = generateAccessToken(user.id);
 			console.log("access token", accessToken);
 			console.log("refresh token", refreshToken);
-			res
-				.cookie("accessToken", accessToken, {
-					secure: true,
-					sameSite: "none",
-				})
-				.cookie("refreshToken", refreshToken, {
-					secure: true,
-					sameSite: "none",
-				})
-				.json({
-					success: true,
-					message: "Login successful",
-					code: "SIGNED_IN",
-					data: { accessToken, refreshToken },
-				});
+			res.json({
+				success: true,
+				message: "Login successful",
+				code: "SIGNED_IN",
+				data: { accessToken, refreshToken },
+			});
 			return;
 		}
 		if (!isPasswordCorrect) {
@@ -265,53 +256,24 @@ export const updatePassword = async (req: Request, res: Response) => {
 	}
 };
 
-export type CustomRequest = Request & {
-	userId?: string;
-};
-export const verifyCookie = async (
-	req: CustomRequest,
+export const verifyCookie = (
+	req: Request,
 	res: Response,
 	next: NextFunction
-): Promise<void> => {
-	const { accessToken, refreshToken } = req.cookies;
+) => {
+	let token = req.headers.authorization;
+
+	if (!token) {
+		res.status(401).send("Access Denied. No refresh token provided.");
+		return;
+	}
+
+	const accessToken = token.toString().split(" ")[1];
 
 	try {
-		const user = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as {
-			userId: string;
-		};
-		if (user) {
-			req.userId = user.userId;
-			return next();
-		}
+		jwt.verify(accessToken!, process.env.ACCESS_TOKEN_SECRET!);
+		next();
 	} catch (error) {
-		if (error instanceof jwt.TokenExpiredError) {
-			console.log("Access token expired, trying refresh token...");
-
-			try {
-				const refreshUser = jwt.verify(
-					refreshToken,
-					process.env.REFRESH_TOKEN_SECRET!
-				) as { userId: string };
-				console.log("Refresh User:", refreshUser);
-
-				if (refreshUser) {
-					const newAccessToken = generateAccessToken(refreshUser.userId);
-					console.log("New Access Token:", newAccessToken);
-
-					res.cookie("accessToken", newAccessToken, {
-						secure: true,
-						sameSite: "none",
-					});
-
-					req.userId = refreshUser.userId;
-					return next();
-				}
-			} catch (err) {
-				console.error("Invalid or expired refresh token:", err);
-				res.status(401).json({ error: "Invalid or expired refresh token" });
-			}
-		}
-
-		res.status(404).json({ error: "Token not found" });
+		res.status(400).send("Invalid Token.");
 	}
 };

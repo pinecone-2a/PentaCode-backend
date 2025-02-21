@@ -17,7 +17,7 @@ app.use(
 		origin: [
 			"https://penta-code-frontend.vercel.app",
 			"http://localhost:3000",
-			"http://192.168.20.229:3000/",
+			"http://192.168.20.229:3000",
 		],
 		credentials: false,
 	})

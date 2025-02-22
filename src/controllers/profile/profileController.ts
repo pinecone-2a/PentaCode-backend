@@ -82,7 +82,9 @@ export const createProfile = async (req: Request, res: Response) => {
 
 export const editProfile = async (req: Request, res: Response) => {
 	const id = req.params.profileId;
-	const { name, about, avatarImage, socialMediaURL } = req.body;
+	console.log("editing");
+	const { name, about, avatarImage, socialMediaURL, backgroundImage } =
+		req.body;
 	try {
 		console.log(id);
 		const edit = await prisma.profile.update({
@@ -94,6 +96,7 @@ export const editProfile = async (req: Request, res: Response) => {
 				about: about,
 				avatarImage: avatarImage,
 				socialMediaURL: socialMediaURL,
+				backgroundImage,
 			},
 		});
 		res.json({ message: "Successfull edited " });

@@ -36,6 +36,7 @@ export const addUser = async (req: Request, res: Response) => {
           username,
         },
       });
+      console.log("checking");
       res.json({ message: "successfully added", newUser });
     }
   } catch (e) {
@@ -49,6 +50,7 @@ export const checkUser = async (req: any, res: any) => {
   try {
     const existingUser = await prisma.user.findUnique({ where: { username } });
     if (existingUser) {
+      console.log("existing");
       return res.status(409).json({ message: "Username has already taken" });
     }
 
@@ -70,12 +72,12 @@ export const checkUser = async (req: any, res: any) => {
     const accessToken = generateAccessToken(newUser.id);
     res
       .cookie("accessToken", accessToken, {
-        sameSite: "strict",
+        sameSite: "none",
         secure: true,
       })
       .cookie("refreshToken", refreshToken, {
-        sameSite: "strict",
         secure: true,
+        sameSite: "none",
       })
       .status(201)
       .json({
@@ -109,21 +111,12 @@ export const verifyUser = async (req: any, res: any) => {
       const accessToken = generateAccessToken(user.id);
       console.log("access token", accessToken);
       console.log("refresh token", refreshToken);
-      res
-        .cookie("accessToken", accessToken, {
-          sameSite: "strict",
-          secure: true,
-        })
-        .cookie("refreshToken", refreshToken, {
-          sameSite: "strict",
-          secure: true,
-        })
-        .json({
-          success: true,
-          message: "Login successful",
-          code: "SIGNED_IN",
-          data: { accessToken, refreshToken },
-        });
+      res.json({
+        success: true,
+        message: "Login successful",
+        code: "SIGNED_IN",
+        data: { accessToken, refreshToken },
+      });
       return;
     }
     if (!isPasswordCorrect) {
@@ -263,53 +256,24 @@ export const updatePassword = async (req: Request, res: Response) => {
   }
 };
 
-export type CustomRequest = Request & {
-  userId?: string;
-};
-export const verifyCookie = async (
-  req: CustomRequest,
+export const verifyCookie = (
+  req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
-  const { accessToken, refreshToken } = req.cookies;
+) => {
+  let token = req.headers.authorization;
+
+  if (!token) {
+    res.status(401).send("Access Denied. No refresh token provided.");
+    return;
+  }
+
+  const accessToken = token.toString().split(" ")[1];
 
   try {
-    const user = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as {
-      userId: string;
-    };
-    if (user) {
-      req.userId = user.userId;
-      return next();
-    }
+    jwt.verify(accessToken!, process.env.ACCESS_TOKEN_SECRET!);
+    next();
   } catch (error) {
-    if (error instanceof jwt.TokenExpiredError) {
-      console.log("Access token expired, trying refresh token...");
-
-      try {
-        const refreshUser = jwt.verify(
-          refreshToken,
-          process.env.REFRESH_TOKEN_SECRET!
-        ) as { userId: string };
-        console.log("Refresh User:", refreshUser);
-
-        if (refreshUser) {
-          const newAccessToken = generateAccessToken(refreshUser.userId);
-          console.log("New Access Token:", newAccessToken);
-
-          res.cookie("accessToken", newAccessToken, {
-            sameSite: "strict",
-            secure: true,
-          });
-
-          req.userId = refreshUser.userId;
-          return next();
-        }
-      } catch (err) {
-        console.error("Invalid or expired refresh token:", err);
-        res.status(401).json({ error: "Invalid or expired refresh token" });
-      }
-    }
-
-    res.status(404).json({ error: "Token not found" });
+    res.status(400).send("Invalid Token.");
   }
 };

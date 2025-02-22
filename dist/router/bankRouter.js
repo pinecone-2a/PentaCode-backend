@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.bankRouter = void 0;
+const express_1 = require("express");
+const bankController_1 = require("../controllers/bank/bankController");
+const userController_1 = require("../controllers/user/userController");
+exports.bankRouter = (0, express_1.Router)();
+exports.bankRouter.get("/:userId", userController_1.verifyCookie, bankController_1.getBankCard);
+exports.bankRouter.post("/:userId", userController_1.verifyCookie, bankController_1.addBankCard);
+exports.bankRouter.put("/:userId", userController_1.verifyCookie, bankController_1.editBankCard);
